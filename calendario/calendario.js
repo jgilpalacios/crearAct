@@ -1,11 +1,18 @@
 class Calendario{
     
+
     constructor() {
+		alert('HHH');
         this.fecha=new Date();
         this.dFestivo=[]//espacio para almacenar los festivos
         this.calen;//array con todo el año
+		alert('HHH: '+JSON.stringify(this.fecha));
     }
-
+	
+	HABLA(){
+		alert(JSON.stringify(this.fecha))
+	}
+	
 	//var lisi=0;
 	//var num_ord=true;
 	//var lista=new Array();
