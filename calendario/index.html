@@ -1,0 +1,283 @@
+<html>
+  <head>
+  <meta http-equiv="Content-Type" content="text/html;" charset="UTF-8">
+    <title>Calendario</title>
+    <link rel="shortcut icon" href="favicon.gif" />
+    <link rel="stylesheet" href="css/estilo.css">
+<script languaje="JavaScript" src="santos3.js" > </script>
+<script languaje="JavaScript" src="calendarioFallec.js" > </script>
+<script languaje="JavaScript" src="generaPDF.js" > </script>
+<script type="text/javascript" src="dist/jspdf.debug.js"></script>
+<script languaje="JavaScript" src="facultativos.js" > </script>
+<script languaje="javascript">
+
+	var NS;
+	var IE;
+	var W3C;
+
+	function carga(){
+		NS=(document.layers)? true : false;
+		IE=(document.all)? true : false;
+		W3C=(document.getElementById)? true : false;
+		return;
+	}
+
+var mesActivo;
+var chino;
+
+function SetAnnoAc(){
+		fecha=new Date();
+		mesActivo=fecha.getMonth();
+  		var annoAc=fecha.getFullYear();
+ 		var mil=parseInt(annoAc/1000);annoAc%=1000;
+ 		var cien=parseInt(annoAc/100);annoAc%=100;
+		var diez=parseInt(annoAc/10);annoAc%=10;
+		var uno=annoAc;
+ 		document.getElementById('O_0_'+mil).selected=true;
+ 		document.getElementById('O_1_'+cien).selected=true;
+ 		document.getElementById('O_2_'+diez).selected=true;
+ 		document.getElementById('O_3_'+uno).selected=true;
+ 	}
+
+function CargaCal(){
+ 		var mil=document.getElementById('D0').value;
+ 		var cien=document.getElementById('D1').value;
+ 		var diez=document.getElementById('D2').value
+ 		var uno=document.getElementById('D3').value;
+  		var anno=''+mil+cien+diez+uno;
+  			document.getElementById('O_0_'+mil).selected=true;
+ 			document.getElementById('O_1_'+cien).selected=true;
+ 			document.getElementById('O_2_'+diez).selected=true;
+ 			document.getElementById('O_3_'+uno).selected=true;
+			CalSolapas(anno);
+ 	}
+
+
+function CalSolapas(anno){
+			var ind=anno%12;
+			switch(ind){
+			  case 0:chino='imagenes/mono.gif';break;
+			  case 1:chino='imagenes/gallo.gif';break;
+			  case 2:chino='imagenes/perro.gif';break;
+			  case 3:chino='imagenes/cerdo.gif';break;
+			  case 4:chino='imagenes/rata.gif';break;
+			  case 5:chino='imagenes/buey.gif';break;
+			  case 6:chino='imagenes/tigre.gif';break;
+			  case 7:chino='imagenes/cone.gif';break;
+              case 8:chino='imagenes/drago.gif';break;
+			  case 9:chino='imagenes/serp.gif';break;
+			  case 10:chino='imagenes/cabal.gif';break;
+			  case 11:chino='imagenes/cabra.gif';break;
+			}
+			asignaSantos(anno);
+			ponFestivo(1,0);
+			ponFestivo(6,0);
+			ponFestivo(1,4);
+			ponFestivo(25,11);
+
+			calen=new Array(12);
+			let pos=8;
+			let siguiente=0;
+			for(var i=0;i<12;i++){
+				if (pos+i===12){
+					pos=-4;
+					siguiente=1;
+				}
+				calen[i]=new Mes(pos+i,anno+siguiente);
+				//alert('esto es inaudito'+i+': '+calen[i]);
+			}
+			fiestaMovil(anno);
+			for(var i=0;i<12;i++){
+				document.getElementById('celda_'+i).innerHTML='<span id=celdad_'+i+'>'+EscribeMes(i, anno)+'</span>'+
+					'<input name="texto" value="texto" type="button" onclick="document.getElementById(\'celdad_'+i+'\').innerHTML=EscribeMes2('+i+', '+anno+')">'+
+
+					'<input name="form" value="form" type="button" onclick="document.getElementById(\'celdad_'+i+'\').innerHTML=EscribeMes('+i+', '+anno+')">'+
+					'<input name="pdf" value="pdf" type="button" onclick="createPDF('+i+','+anno+');">'+
+
+					'<input checked="checked" name="numero" onclick="num_ord=!num_ord;" value="ok" type="checkbox">Pon nº de orden'+
+
+					'<span id="FEAs'+i+'">'+GeneraEditFEA(i,listaFeaLong)+'</span>'+
+
+					'<input name="act" value="actualizar" type="button" onclick="GeneraFEA();"><input value="+" onclick="listaFeaLong++; document.getElementById(\'FEAs'+i+'\').innerHTML=GeneraEditFEA('+i+',(listaFeaLong-1));" name="+" type="button"><input name="-" value="-" onclick="listaFeaLong--; document.getElementById(\'FEAs'+i+'\').innerHTML=GeneraEditFEA('+i+',(listaFeaLong+1));" type="button"></br>'+
+
+					'<span style="color: rgb(204, 0, 0); font-weight: bold;"><big>Santoral</big></span></br><span id="celda_'+i+'_santoral" style="color: rgb(0, 0, 153);"></span>';
+				document.getElementById('celda_4_'+i).innerHTML=anno;
+				document.getElementById('celda_0_'+i).setAttribute("background",chino);
+				}
+			solapas2$mueve_primerplano(mesActivo);
+
+	}
+
+var Cumpleannos=new Array();
+function PonCumpleannos(){
+	var aux;
+	for (var i=0;i<12;i++){
+		Cumpleannos[i]=new Array();
+	}
+
+if(Cumpleannos[(06-1)][02]==null){ Cumpleannos[(06-1)][02]="Juan(1962)";}else{ Cumpleannos[(06-1)][02]+=";Juan(1962)";}if(Cumpleannos[(11-1)][25]==null){ Cumpleannos[(11-1)][25]="Irene(1992)";}else{ Cumpleannos[(11-1)][25]+=";Irene(1992)";}if(Cumpleannos[(05-1)][17]==null){ Cumpleannos[(05-1)][17]="Eva(1994)";}else{ Cumpleannos[(05-1)][17]+=";Eva(1994)";}if(Cumpleannos[(06-1)][03]==null){ Cumpleannos[(06-1)][03]="Elena(1997)";}else{ Cumpleannos[(06-1)][03]+=";Elena(1997)";}if(Cumpleannos[(01-1)][21]==null){ Cumpleannos[(01-1)][21]="Alejandro(1999)";}else{ Cumpleannos[(01-1)][21]+=";Alejandro(1999)";}if(Cumpleannos[(03-1)][25]==null){ Cumpleannos[(03-1)][25]="Encarna(1961)";}else{ Cumpleannos[(03-1)][25]+=";Encarna(1961)";}if(Cumpleannos[(01-1)][24]==null){ Cumpleannos[(01-1)][24]="Pablo(1925)";}else{ Cumpleannos[(01-1)][24]+=";Pablo(1925)";}if(Cumpleannos[(01-1)][28]==null){ Cumpleannos[(01-1)][28]="Julia(1931)";}else{ Cumpleannos[(01-1)][28]+=";Julia(1931)";}if(Cumpleannos[(04-1)][13]==null){ Cumpleannos[(04-1)][13]="Jacoba(1922)";}else{ Cumpleannos[(04-1)][13]+=";Jacoba(1922)";}if(Cumpleannos[(06-1)][19]==null){ Cumpleannos[(06-1)][19]="Joaquín(1918)";}else{ Cumpleannos[(06-1)][19]+=";Joaquín(1918)";}if(Cumpleannos[(08-1)][03]==null){ Cumpleannos[(08-1)][03]="Miguel(1963)";}else{ Cumpleannos[(08-1)][03]+=";Miguel(1963)";}if(Cumpleannos[(07-1)][24]==null){ Cumpleannos[(07-1)][24]="Elena(1965)";}else{ Cumpleannos[(07-1)][24]+=";Elena(1965)";}if(Cumpleannos[(03-1)][11]==null){ Cumpleannos[(03-1)][11]="Lourdes(1958)";}else{ Cumpleannos[(03-1)][11]+=";Lourdes(1958)";}if(Cumpleannos[(04-1)][22]==null){ Cumpleannos[(04-1)][22]="Javier(1963)";}else{ Cumpleannos[(04-1)][22]+=";Javier(1963)";}if(Cumpleannos[(09-1)][19]==null){ Cumpleannos[(09-1)][19]="Fernando(1964)";}else{ Cumpleannos[(09-1)][19]+=";Fernando(1964)";}if(Cumpleannos[(03-1)][20]==null){ Cumpleannos[(03-1)][20]="Leire(2002)";}else{ Cumpleannos[(03-1)][20]+=";Leire(2002)";}if(Cumpleannos[(10-1)][01]==null){ Cumpleannos[(10-1)][01]="Blanca(1972)";}else{ Cumpleannos[(10-1)][01]+=";Blanca(1972)";}if(Cumpleannos[(04-1)][05]==null){ Cumpleannos[(04-1)][05]="Maider(1995)";}else{ Cumpleannos[(04-1)][05]+=";Maider(1995)";}if(Cumpleannos[(11-1)][30]==null){ Cumpleannos[(11-1)][30]="Laura(1993)";}else{ Cumpleannos[(11-1)][30]+=";Laura(1993)";}if(Cumpleannos[(12-1)][18]==null){ Cumpleannos[(12-1)][18]="Carlota(1994)";}else{ Cumpleannos[(12-1)][18]+=";Carlota(1994)";}if(Cumpleannos[(11-1)][23]==null){ Cumpleannos[(11-1)][23]="Jaime(1999)";}else{ Cumpleannos[(11-1)][23]+=";Jaime(1999)";}if(Cumpleannos[(04-1)][15]==null){ Cumpleannos[(04-1)][15]="Miguel(1997)";}else{ Cumpleannos[(04-1)][15]+=";Miguel(1997)";}if(Cumpleannos[(08-1)][20]==null){ Cumpleannos[(08-1)][20]="Joaquin(1959)";}else{ Cumpleannos[(08-1)][20]+=";Joaquin(1959)";}if(Cumpleannos[(05-1)][08]==null){ Cumpleannos[(05-1)][08]="Lucía(2006)";}else{ Cumpleannos[(05-1)][08]+=";Lucía(2006)";}if(Cumpleannos[(02-1)][14]==null){ Cumpleannos[(02-1)][14]="Valentín(1915)";}else{ Cumpleannos[(02-1)][14]+=";Valentín(1915)";}
+}
+var AniversarioF=new Array();
+function PonAniversarioF(){
+	var aux;
+	for (var i=0;i<12;i++){
+		AniversarioF[i]=new Array();
+	}
+
+if(AniversarioF[(11-1)][04]==null){ AniversarioF[(11-1)][04]="Pablo +(2015)";}else{ AniversarioF[(11-1)][04]+=";Pablo +(2015)";}if(AniversarioF[(05-1)][15]==null){ AniversarioF[(05-1)][15]="Jacoba +(2003)";}else{ AniversarioF[(05-1)][15]+=";Jacoba +(2003)";}if(AniversarioF[(12-1)][20]==null){ AniversarioF[(12-1)][20]="Joaquín +(2006)";}else{ AniversarioF[(12-1)][20]+=";Joaquín +(2006)";}if(AniversarioF[(01-1)][04]==null){ AniversarioF[(01-1)][04]="Eugenia +(1971)";}else{ AniversarioF[(01-1)][04]+=";Eugenia +(1971)";}if(AniversarioF[(06-1)][08]==null){ AniversarioF[(06-1)][08]="Valentín +(1997)";}else{ AniversarioF[(06-1)][08]+=";Valentín +(1997)";}
+
+}
+
+
+let nombreMeses=['Septiembre', 'Octubre', 'Noviembre', 'Diciembre', 'Enero','Febrero','Marzo','Abril','Mayo','Junio', 'Julio', 'Agosto'];
+let htmlSolapas='';
+nombreMeses.forEach((mes,i)=>{
+  htmlSolapas+=`<div id="solapas2$capa${i}_1" style="position:absolute; left:${8.2*i}%; top:60px; width:8%; height:40px; z-index:8;
+   overflow:auto; border:none;" onClick="solapas2$mueve_primerplano(${i})" class="solapa">${mes}</div>
+  <div id="solapas2$capa${i}_0" style="position:absolute; left:0px; top:100px; width:100%; height:460px; z-index:7;  overflow:auto; border:none; visibility:visible" class="carpeta">
+  <br/>
+    <center>
+    <table border="1" cellpadding="0" cellspacing="0" style="border-collapse: collapse" bordercolor="#111111" width="100%" id="AutoNumber1">
+      <tr>
+        <td width="50%" id="celda_${i}" valign="top" bgcolor="#FFFFFF">&nbsp;</td>
+        <td width="50%" bordercolorlight="#008000" bgcolor="#FFFFFF" align="center" id="celda_0_${i}" background="imagenes/mono.gif">
+  	<img border="0" src="imagenes/${mes}.gif" width="367" height="334">
+        </td>
+      </tr>
+      <tr>
+        <td width="50%">&nbsp;</td>
+        <td width="50%" id="celda_4_${i}">&nbsp;</td>
+      </tr>
+    </table>
+    </center>
+  </div>`
+});
+function ponMisSolapas(){
+  document.getElementById('misSolapas').innerHTML=htmlSolapas;
+  id="misSolapas"
+};
+
+</script>
+
+</head>
+<body id="cuerpo" style="margin:0"> <!-- onload="ponMisSolapas();PonCumpleannos(); PonAniversarioF(); GeneraFEA(); /* carga();*/  SetAnnoAc();  CargaCal(); "> -->
+<center>
+<form id='intro'>
+  		<input type="button" value="enviar" onclick="CargaCal();"/>
+  	<select size="1" id="D0">
+        	<option value="0" id="O_0_0">0</option>
+        	<option value="1" id="O_0_1">1</option>
+        	<option value="2" id="O_0_2">2</option>
+        	<option value="3" id="O_0_3">3</option>ponCV();
+        </select>
+        <select size="1" id="D1">
+        	<option value="0" id="O_1_0">0</option>
+        	<option value="1" id="O_1_1">1</option>
+        	<option value="2" id="O_1_2">2</option>
+        	<option value="3" id="O_1_3">3</option>
+        	<option value="4" id="O_1_4">4</option>
+        	<option value="5" id="O_1_5">5</option>
+        	<option value="6" id="O_1_6">6</option>
+        	<option value="7" id="O_1_7">7</option>
+        	<option value="8" id="O_1_8">8</option>
+        	<option value="9" id="O_1_9">9</option>
+        </select>
+        <select size="1" id="D2">
+        	<option value="0" id="O_2_0">0</option>
+        	<option value="1" id="O_2_1">1</option>
+        	<option value="2" id="O_2_2">2</option>
+        	<option value="3" id="O_2_3">3</option>
+        	<option value="4" id="O_2_4">4</option>
+        	<option value="5" id="O_2_5">5</option>
+        	<option value="6" id="O_2_6">6</option>
+        	<option value="7" id="O_2_7">7</option>
+        	<option value="8" id="O_2_8">8</option>
+        	<option value="9" id="O_2_9">9</option>
+        </select>
+        <select size="1" id="D3">
+        	<option value="0" id="O_3_0">0</option>
+        	<option value="1" id="O_3_1">1</option>
+        	<option value="2" id="O_3_2">2</option>
+        	<option value="3" id="O_3_3">3</option>
+        	<option value="4" id="O_3_4">4</option>
+        	<option value="5" id="O_3_5">5</option>
+        	<option value="6" id="O_3_6">6</option>
+        	<option value="7" id="O_3_7">7</option>
+        	<option value="8" id="O_3_8">8</option>
+        	<option value="9" id="O_3_9">9</option>
+      	</select>
+      	<input type="button" value="año actual" onclick="SetAnnoAc(); CargaCal();"/> <br/>CALENDARIO Y SANTORAL
+
+(Visita n&deg; --no contabilizda--)<br/><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<!--Visita n&deg;: 77<br/>;-->
+ </form>
+</center>
+
+	<script languaje="javascript">
+
+function solapas2$mueve_primerplano(capa){
+	var elemento;
+	var solapa;
+	var tope=12;
+  let solapaObj;
+	for( var i=0;i<tope;i++){
+
+		if(NS){
+			elemento=document.layers["solapas2$capa"+i+"_0"].style;
+			solapa=document.layers["solapas2$capa"+i+"_1"].style;
+      solapaObj=document.layers["solapas2$capa"+i+"_1"];
+		}
+		if(IE){
+			elemento=document.all("solapas2$capa"+i+"_0").style;
+			solapa=document.all("solapas2$capa"+i+"_1").style;
+      solapaObj=document.all("solapas2$capa"+i+"_1");
+		}
+		if(W3C){
+			elemento=document.getElementById("solapas2$capa"+i+"_0").style;
+			solapa=document.getElementById("solapas2$capa"+i+"_1").style;
+      solapaObj=document.getElementById("solapas2$capa"+i+"_1");
+		}
+		if(i<capa) {
+			elemento.visibility="hidden";
+      //solapa.borderBottom='thin solid black';
+			elemento.zIndex=5;
+      solapaObj.className = "solapa";
+		}else if(i==capa){
+			elemento.visibility="visible";
+			//solapa.border="none";
+			elemento.border="none";
+      solapaObj.className = "solapaSel";
+			elemento.zIndex=7;
+		}else{
+			elemento.visibility="hidden";
+      //solapa.borderBottom="thin solid black"
+      solapaObj.className = "solapa";
+			elemento.zIndex=5;
+		}
+	}
+	return;
+}
+
+</script>
+
+
+<span id="misSolapas"></span>
+
+<script languaje="javascript">
+function limpiar(){
+    //alert("Hello");
+    //alert(document.body.innerHTML);
+    document.body.innerHTML=document.body.innerHTML.split('<div>cortamos por aqui</div>')[0];
+    ponMisSolapas();PonCumpleannos(); PonAniversarioF(); GeneraFEA();  carga();  SetAnnoAc();  CargaCal();
+    clearInterval(myVar);
+}
+myVar=setInterval(limpiar, 500);
+//var myVar=setInterval(function(){ alert("Hello");alert(document.body.innerHTML); clearInterval(myVar);}, 3000);
+</script>
+<br/>
+<br/>
+<div>cortamos por aqui</div>
+<br/>
+<br/>
+</body>
+</html>
