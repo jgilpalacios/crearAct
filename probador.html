@@ -4,7 +4,7 @@
         <title>
             probador
         </title>
-        <script languaje="JavaScript" src="calendario.js" > </script>
+        <script languaje="JavaScript" src="js/calendario.js" > </script>
         <script languaje="javascript">
             let p=new Calendario(2021,9);
             //p.HABLA();
@@ -21,8 +21,8 @@
                 if(fecha[0]==='2021') p.fijaDiaEspecial(+fecha[2],+fecha[1]-9,'nolectivo',true)
                 else p.fijaDiaEspecial(+fecha[2],+fecha[1]+3,'nolectivo',true)
             });
-            alert('UN POCO ANTES: '+p.fecha.getTime());
-            alert('+++ '+JSON.stringify(p.dFestivo));
+            //alert('UN POCO ANTES: '+p.fecha.getTime());
+            //alert('+++ '+JSON.stringify(p.dFestivo));
        </script>
     </head>
    

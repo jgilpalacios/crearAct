@@ -3,6 +3,8 @@
   <head>
     <meta content="text/html; charset=UTF-8" http-equiv="content-type">
     <title>PonerSesiones</title>
+    <link rel="stylesheet" href="css/estilo.css">
+    <script languaje="JavaScript" src="js/calendario.js" > </script>
     <script type="text/javascript">
 		let EJERCICIO;
     	let TIPO;
@@ -119,10 +121,12 @@
 				document.getElementById('DURACION_ACTIVIDAD').value=DURACION_ACTIVIDAD;
 			}else alert(en);
 			exponPlan();
+
 			//reordena();
 			//alert(JSON.stringify(SESIONES));
 
     	}
+
     	function SesionesSeguidas(n,intervalo){
     		intervalo=intervalo||1;
     		let fechaAnt=document.getElementById('SESION_FECHA').value;
@@ -180,7 +184,7 @@
     	}
     	//reorganizar y ordenar por fecha
     	function reordena(){
-			SESIONES.sort(function(a, b) {//alert(a);
+            'cc'		SESIONES.sort(function(a, b) {//alert(a);
 			return  a['FECHA'] > b['FECHA'] ? 1 : -1;
 			})
 			SESIONES.forEach((item,i)=>{
@@ -459,12 +463,7 @@
 //Sabados o domingos
 //los festivos declarados oficialmente, que pondremos en el array siguiente
 let nuevoPlanTrabajo=SESIONES;//creado para ajustar la función
-let DiasNoLectivos=['2021-10-11','2021-10-12',/*octubre*/
-'2021-11-01',/*noviembre*/
-'2021-12-06','2021-12-07','2021-12-08', '2021-12-23','2021-12-24','2021-12-27','2021-12-28','2021-12-29','2021-12-30','2021-12-31',/*diciembre*/
-'2022-01-03','2022-01-04','2022-01-04','2022-01-05','2022-01-06','2022-01-07',/*enero*/
-'2022-04-08','2022-04-11','2022-04-12','2022-04-13','2022-04-14','2022-04-15','2022-04-18',/*abril*/
-'2022-05-02'/*mayo*/];
+
 function NoLectivo(){
 	let mensaje='';
 	let resultado=true;
@@ -511,13 +510,19 @@ function CargaLaActividad(texto){//alert(texto);
 
 ///////////////
 
+
     </script>
   </head>
   <body>
-  	EJERCICIO: <input id="EJERCICIO" type="text" value="2020-21"><br>
+  <div>
+  	EJERCICIO: <input id="EJERCICIO" type="text" value="2021-22"><br>
   <select id="selEJERCICIO" onchange="document.getElementById('EJERCICIO').value=this.value">	  
-  </select><br>
-  	DURACION_ACTIVIDAD:<input id="DURACION_ACTIVIDAD" type="text" value="">DURACION_PONENCIAS:<input id="DURACION_PONENCIAS" type="text" value=""><br>
+  </select>
+  <hr>
+    <span id="CONTENIDO_SESIONES">AQUI VA</span>
+    </div>
+    <div style="width:40%;float: left;"><span id="cont">kkkk</span></div><div style="width:10%;float:left; text-align:center;">___</div><div style="width:50%; float: left;">
+  	DURACION_ACTIVIDAD:<input id="DURACION_ACTIVIDAD" type="text" value=""><br>DURACION_PONENCIAS:<input id="DURACION_PONENCIAS" type="text" value=""><br>
   	REPARTO DE PONENCIAS:<br>
   	<span id="REPARTO_PONENCIAS"></span>
   	<select id="TIPO">
@@ -556,13 +561,13 @@ function CargaLaActividad(texto){//alert(texto);
     <button id="SESIONES_SEGUIDAS" onclick="SesionesSeguidas(document.getElementById('SESION_REPETICIONES').value)">SESIONES SEGUIDAS</button><br>
     <button id="SESIONES_SEMANALES" onclick="SesionesSeguidas(document.getElementById('SESION_REPETICIONES').value,7)">SESIONES SEMANALES</button><br>
     <button id="SESIONES_MENSUALES" onclick="SesionesMensuales(document.getElementById('SESION_REPETICIONES').value)">SESIONES MENSUALES</button>
-    <hr>
-    <span id="CONTENIDO_SESIONES">AQUI VA</span>
+    
     <hr>
     DATOS PARTICIPANTES (pegar tabla con nombres de campos en primera linea)<br>
 	<button id="CARGA_PARTICIPANTES" onclick="/*alert(this.value);*/GeneraParticipantes(document.getElementById('dd').value);alert(JSON.stringify(PARTICIPANTES))">PON LOS PARTICIPANTES</button>
 	<button id="CARGA_ACTIVIDAD" onclick="CargaLaActividad(document.getElementById('dd').value);/*alert('LA CARGAMOS')*/">RECARGA LA ACTIVIDAD</button><br>
-    <textarea rows="100" cols="100" id="dd" name="dd"></textarea>
+    <textarea rows="100" cols="80" id="dd" name="dd"></textarea>
+  </div>
   </body>
   <script type="text/javascript">
   let fechaAc=new Date();
@@ -574,5 +579,29 @@ function CargaLaActividad(texto){//alert(texto);
 	else tEjercicio+='<option>'+(annoAc+i)+'-'+((annoAc+i+1)+'').substring(2,4)+'</option>';
   }
   document.getElementById('selEJERCICIO').innerHTML= tEjercicio;
+  ////////////// con clase calendario
+  EJERCICIO=document.getElementById('EJERCICIO').value;
+  //alert(EJERCICIO);
+  let annoEjercicio=+EJERCICIO.split('-')[0];
+    let p=new Calendario(annoEjercicio,9);//alert(annoEjercicio);
+    let DiasNoLectivos=['2021-10-11','2021-10-12',/*octubre*/
+'2021-11-01',/*noviembre*/
+'2021-12-06','2021-12-07','2021-12-08', '2021-12-23','2021-12-24','2021-12-27','2021-12-28','2021-12-29','2021-12-30','2021-12-31',/*diciembre*/
+'2022-01-03','2022-01-04','2022-01-04','2022-01-05','2022-01-06','2022-01-07',/*enero*/
+'2022-04-08','2022-04-11','2022-04-12','2022-04-13','2022-04-14','2022-04-15','2022-04-18',/*abril*/
+'2022-05-02'/*mayo*/];
+    DiasNoLectivos.forEach((dia,i)=>{
+        let fecha=dia.split('-');
+        if(fecha[0]==='2021') p.fijaDiaEspecial(+fecha[2],+fecha[1]-9,'nolectivo',true)
+        else p.fijaDiaEspecial(+fecha[2],+fecha[1]+3,'nolectivo',true)
+    });
+    let trat=['<td class="defecto" id="#id#" onclick="alert(this.id)">#dia#</td>','<td class="defecto" id="#id#">#dia#</td>','<td class="defecto" id="#id#">#dia#</td>','<td class="defecto" id="#id#">#dia#</td>','<td class="defecto" id="#id#">#dia#</td>','<td class="sabado" id="#id#"><u>#dia#</u></td>','<td class="domingo" id="#id#" onclick="alert(\'#dia#\')"><b>#dia#</b></td>'];
+        let tratNoLect='<td class="noLectivo" id="#id#" onclick="alert(this.id)"><b>#dia#</b></td>';
+        let tt='';
+        for(let i=0;i<12;i++){//alert(p.calen[i].nombre+', '+p.calen[i].anno);
+            tt+='<div>'+p.calen[i].nombre+', '+p.calen[i].anno+'<div>'+p.EscribeMesPos2(i,trat,tratNoLect);
+        }
+        document.getElementById('cont').innerHTML=tt;
+        //alert(JSON.stringify('HOLA'));
   </script>
 </html>

@@ -26,7 +26,7 @@ class Calendario{
 			};
 			this.calen[i]=mes;
 		}
-		alert('HHH: '+JSON.stringify(this.calen));
+		//alert('HHH: '+JSON.stringify(this.calen));
 		//alert('HHH: '+JSON.stringify(this.fecha));
     }
 	
@@ -36,7 +36,7 @@ class Calendario{
 			//html+=sepMes.replace('#mes#', JSON.stringify(mes));
 			html+=sepMes.replace('#mes#', this.EscribeMesPos(i,'<div>#cab#</div>','<table style="width: 100%" border="1"><tbody>#cuerpo#</tbody></table>',''));
 		});
-		alert(html);
+		//alert(html);
 		return html;
 	}
 	
@@ -80,15 +80,13 @@ class Calendario{
 		}
 		//alert(thuecos);
 		let re = new RegExp(/#dia#/gi);
+        let id = new RegExp(/#id#/gi);
 		for (let i=0;i<mes.duracion;i++){
 			posd++;
 			let ti=(' '+(i+1)).substring((' '+(i+1)).length-2);
 			if(this.dFestivo[31*pos+i+1]){
-				thuecos+=`${tnolec.replace(re,ti)}`;
-			}else thuecos+=`${tratamiento[posd-1].replace(re,ti)}`;
-			//thuecos+=`<td>${tratamiento[posd-1].replace(re,''+(i+1))}</td>`;
-			//thuecos+=`<td>${tratamiento[posd-1].replace(/#dia#/gi,''+(i+1))}</td>`;
-			//thuecos+=`<td>${tratamiento[posd-1].replace('#dia#',''+(i+1))}</td>`;
+				thuecos+=`${tnolec.replace(id,'d'+(31*pos+i+1)).replace(re,ti)}`;
+			}else thuecos+=`${tratamiento[posd-1].replace(id,'d'+(31*pos+i+1)).replace(re,ti)}`;
 			if(posd===7 && i!==mes.duracion-1){
 				thuecos+='</tr><tr>';
 				posd=posd%7;
@@ -100,7 +98,7 @@ class Calendario{
 	}
 
 	fijaDiaEspecial(dia,mesPos,atributo,valor){
-		alert(dia+'-'+mesPos+'.'+atributo+':'+valor);
+		//alert(dia+'-'+mesPos+'.'+atributo+':'+valor);
 		this.dFestivo[31*mesPos+dia]={};
 		this.dFestivo[31*mesPos+dia][atributo]=valor||true;
 	}
