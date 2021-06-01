@@ -231,6 +231,8 @@ function EjecutaEdicion(){//alert(JSON.stringify(tareas));//alert(JSON.stringify
     borrables.sort(function(a, b) { return b - a;});
     //alert (JSON.stringify(borrables));
     previaborrada=-1;
+    //if(borrables.length>0)document.getElementById('cont').innerHTML=generaCalendario();
+ 
     borrables.forEach((borrable)=>{
         if(previaborrada!==borrable){
             if(SESIONES[borrable].FECHA===''){;
@@ -258,6 +260,8 @@ function EjecutaEdicion(){//alert(JSON.stringify(tareas));//alert(JSON.stringify
     CRÉDITOS=Math.round(+DURACION_ACTIVIDAD)/10;
     LISTA_PONENTES.HORAS=DURACION_PONENCIAS;
     document.getElementById('DURACION_ACTIVIDAD').value=DURACION_ACTIVIDAD;
+
+    document.getElementById('cont').innerHTML=generaCalendario(+EJERCICIO.split('-')[0]);
     exponPlan();
 }
 function RevisionFechasYSumaHPonentes(){
@@ -334,7 +338,7 @@ function exponPlan(){
             }*/
             
             textoHTML+=textoPon+'</p></td>';
-        alert(fecha+': '+ponencia);
+        //alert(fecha+': '+ponencia);
         ponSesCal(fecha, ponencia);
     });
     textoHTML+='</tr></tbody></table>';
@@ -342,6 +346,7 @@ function exponPlan(){
     document.getElementById('CONTENIDO_SESIONES').innerHTML=textoHTML;
 }
 
+//se marca la sesion en la fecha del calendario del ejerccio
 function ponSesCal(fecha, ponencia){
     let anno=EJERCICIO.split('-')[0];
     let ArrFecha=fecha.split('-')
@@ -351,16 +356,17 @@ function ponSesCal(fecha, ponencia){
     }else{
         imes=+ArrFecha[1]+3;
     }
-    alert('d'+(31*imes+(+ArrFecha[2])));
-    alert(document.getElementById('d'+(31*imes+(+ArrFecha[2]))));
+    //alert('d'+(31*imes+(+ArrFecha[2])));
+    //alert(document.getElementById('d'+(31*imes+(+ArrFecha[2]))));
     let elemento=document.getElementById('d'+(31*imes+(+ArrFecha[2])));
-    if(ponencia){alert('cc');
-        elemento.className += 'ponencia';
-        //document.getElementById('d'+(31*imes+(+ArrFecha[2]))).classList.add('ponencia');
+    
+    if(ponencia){//alert('cc');
+        elemento.classList.remove('sesion');
+        elemento.classList.add('ponencia');
     }else{
-        elemento.className += 'sesion';
-        //document.getElementById('d'+(31*imes+(+ArrFecha[2]))).classList.add('sesion');
-    }
+        elemento.classList.remove('ponencia');
+        elemento.classList.add('sesion');
+    }   
    
 }
 ///Tabla de participantes
@@ -526,6 +532,49 @@ EjecutaEdicion();
 RevisionFechasYSumaHPonentes();
 //alert(PARTICIPANTES);
 }
+//genera el html del calendario cuyo año inicia del ejercicio, se pasa como parametro
+//se crea comenzando en septiembre hasta agosto del año siguiente
+function generaCalendario(annoEjercicio){
+    
+    let p=new Calendario(annoEjercicio,9);//alert(annoEjercicio);
+    
+    DiasNoLectivos.forEach((dia,i)=>{
+        let fecha=dia.split('-');
+        if(fecha[0]==='2021') p.fijaDiaEspecial(+fecha[2],+fecha[1]-9,'nolectivo',true)
+        else p.fijaDiaEspecial(+fecha[2],+fecha[1]+3,'nolectivo',true)
+    });
+    let trat=['<td class="defecto" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="defecto" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="defecto" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="defecto" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="defecto" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="sabado" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="domingo" id="#id#" onclick="gestionaFecha(this)">#dia#</td>'];
+        let tratNoLect='<td class="noLectivo" id="#id#" onclick="gestionaFecha(this)"><b>#dia#</b></td>';
+        let tt='';
+        for(let i=0;i<12;i++){//alert(p.calen[i].nombre+', '+p.calen[i].anno);
+            tt+='<div>'+p.calen[i].nombre+', '+p.calen[i].anno+'<div>'+p.EscribeMesPos2(i,trat,tratNoLect);
+        }
+    return tt;   
+}
 
+function gestionaFecha(casilla){
+   if(casilla.classList.contains('sesion')||casilla.classList.contains('ponencia')){
+        alert('Para borrar o editar propiedades debes usar la lista de sesiones del principio')
+   }else{
+        let aux=+casilla.id.substring(1);
+        let mes=Math.ceil(aux/31);
+        let dia=aux%31;
+        let anno=+EJERCICIO.split('-')[0];
+        if(mes>4){
+            anno++;
+            mes='0'+(mes-4);
+        }else{
+            mes+=8;
+            mes='0'+mes;
+            mes=mes.substring(mes.length-2);
+        }
+        dia='0'+dia;
+        dia=dia.substring(dia.length-2);
+        document.getElementById('SESION_FECHA').value=anno+'-'+mes+'-'+dia;
+        adicionaSesion();
+        if(LISTA_PONENTES.PONENTES) casilla.classList.add('ponencia');
+        else casilla.classList.add('sesion');
+   }
+}
 
 ///////////////
