@@ -555,10 +555,10 @@ function generaCalendario(annoEjercicio){
 function gestionaFecha(casilla){
    if(casilla.classList.contains('sesion')||casilla.classList.contains('ponencia')){
         alert('Para borrar o editar propiedades debes usar la lista de sesiones del principio')
-   }else{
+   }else{alert(casilla.id)
         let aux=+casilla.id.substring(1);
         let mes=Math.ceil(aux/31);
-        let dia=aux%31;
+        let dia=aux%31||31;
         let anno=+EJERCICIO.split('-')[0];
         if(mes>4){
             anno++;
@@ -570,6 +570,7 @@ function gestionaFecha(casilla){
         }
         dia='0'+dia;
         dia=dia.substring(dia.length-2);
+        alert(anno+'-'+mes+'-'+dia)
         document.getElementById('SESION_FECHA').value=anno+'-'+mes+'-'+dia;
         adicionaSesion();
         if(LISTA_PONENTES.PONENTES) casilla.classList.add('ponencia');
@@ -578,3 +579,36 @@ function gestionaFecha(casilla){
 }
 
 ///////////////
+function genSesCSV(){
+    let csv='';
+    let fila1='';
+    let fila2='';
+    let fila3='';
+    let fila4='';
+    let fila5='';
+    let fila6='';
+    SESIONES.forEach((sesion)=>{
+        fila1+='"'+sesion['SESIÓN']+'";';
+        fila2+='"'+sesion['FECHA']+'";';
+        fila3+='"'+sesion['DURACIÓN']+'";';
+        if(+sesion['PONENCIA_DURACIÓN']) {
+            fila4+='"'+sesion['PONENCIA_DURACIÓN']+'";';
+            let inpon='23:59';
+            sesion.PONENTES.forEach((pon)=>{
+                if(pon!==''){
+                    if(pon.HORA_INICIO<inpon)inpon=pon.HORA_INICIO;
+                }
+            });
+            fila6+='"'+inpon+'";';
+        }else{
+            fila4+='"";';
+            fila6+='"";';
+        }
+        fila5+='"'+sesion['HORA_INICIO']+'";';
+
+    });
+    csv+=fila1.substring(0, fila1.length-1)+'\n'+fila2.substring(0, fila2.length-1)+'\n';
+    csv+=fila3.substring(0, fila3.length-1)+'\n'+fila4.substring(0, fila4.length-1)+'\n';
+    csv+=fila5.substring(0, fila5.length-1)+'\n'+fila6.substring(0, fila6.length-1)+'\n';
+    alert(csv);
+}
