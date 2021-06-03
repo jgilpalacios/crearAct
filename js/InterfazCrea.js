@@ -491,6 +491,8 @@ function generarTjson(datos) {//alert('se entra');
 let nuevoPlanTrabajo=SESIONES;//creado para ajustar la función
 ////
 function NoLectivo(){
+    nuevoPlanTrabajo=SESIONES;//se vuelve a enlazar para asegurar enlace con SESIONES
+
 let mensaje='';
 let resultado=true;
 nuevoPlanTrabajo.forEach((sesion,j)=>{
@@ -555,7 +557,7 @@ function generaCalendario(annoEjercicio){
 function gestionaFecha(casilla){
    if(casilla.classList.contains('sesion')||casilla.classList.contains('ponencia')){
         alert('Para borrar o editar propiedades debes usar la lista de sesiones del principio')
-   }else{alert(casilla.id)
+   }else{//alert(casilla.id)
         let aux=+casilla.id.substring(1);
         let mes=Math.ceil(aux/31);
         let dia=aux%31||31;
@@ -570,7 +572,7 @@ function gestionaFecha(casilla){
         }
         dia='0'+dia;
         dia=dia.substring(dia.length-2);
-        alert(anno+'-'+mes+'-'+dia)
+        //alert(anno+'-'+mes+'-'+dia)
         document.getElementById('SESION_FECHA').value=anno+'-'+mes+'-'+dia;
         adicionaSesion();
         if(LISTA_PONENTES.PONENTES) casilla.classList.add('ponencia');
