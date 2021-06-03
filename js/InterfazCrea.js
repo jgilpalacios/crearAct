@@ -306,7 +306,7 @@ function exponPlan(){
                 textoHTML+='</tr><tr>';
             }
         }
-        textoHTML+=`<td><p style="text-align:center;" onclick="document.getElementById('SESION_FECHA').value=document.getElementById('SESION_FECHA_${i}').value"><span style="cursor:pointer;">nº: ${item.SESIÓN}</span></p><p>FECHA:<input id="SESION_FECHA_${i}" type="date" value="${item.FECHA}" onchange="annadeEdicion(${i},'fecha',this)"><br>INICIO:<input id="SESION_HORA_INICIO_${i}" value="${item.HORA_INICIO}" type="time" onchange="annadeEdicion(${i},'ini',this)"><br>FINAL:<input id="SESION_HORA_FINAL_${i}" value="${item.HORA_FINAL}" type="time" onchange="annadeEdicion(${i},'fin',this)"><br>Duración: ${Duracion(item.HORA_INICIO,item.HORA_FINAL).horas} h.<br>PONENCIA: <input id="SESION_PONENCIA_DURACIÓN_${i}" value="${item.PONENCIA_DURACIÓN}" type="text" size="2"> h.`;
+        textoHTML+=`<td><p style="text-align:center;" onclick="document.getElementById('SESION_FECHA').value=document.getElementById('SESION_FECHA_${i}').value"><span style="cursor:pointer;">nº: ${item.SESIÓN}</span></p><p>FECHA:<input id="SESION_FECHA_${i}" type="date" value="${item.FECHA}" onchange="annadeEdicion(${i},'fecha',this)"><br><span style="cursor:pointer;" onclick="document.getElementById('SESION_HORA_INICIO').value=document.getElementById('SESION_HORA_INICIO_${i}').value">INICIO:</span><input id="SESION_HORA_INICIO_${i}" value="${item.HORA_INICIO}" type="time" onchange="annadeEdicion(${i},'ini',this)"><br><span style="cursor:pointer;" onclick="PonDuracionAjustada(${i})">FINAL:<input id="SESION_HORA_FINAL_${i}" value="${item.HORA_FINAL}" type="time" onchange="annadeEdicion(${i},'fin',this)"><br>Duración: ${Duracion(item.HORA_INICIO,item.HORA_FINAL).horas} h.<br>PONENCIA: <input id="SESION_PONENCIA_DURACIÓN_${i}" value="${item.PONENCIA_DURACIÓN}" type="text" size="2"> h.`;
             let textoPon='';
             let chequeada='checked';//alert(JSON.stringify(LISTA_PONENTES.PONENTES))
             if(LISTA_PONENTES.PONENTES!==undefined){
@@ -613,4 +613,80 @@ function genSesCSV(){
     csv+=fila3.substring(0, fila3.length-1)+'\n'+fila4.substring(0, fila4.length-1)+'\n';
     csv+=fila5.substring(0, fila5.length-1)+'\n'+fila6.substring(0, fila6.length-1)+'\n';
     alert(csv);
+}
+
+////
+function ExportarDatos(){//alert(calcMD5(palabra));
+    EJERCICIO=document.getElementById('EJERCICIO').value||'2020-21';
+    TIPO=document.getElementById('TIPO').value;
+    ACTIVIDAD=document.getElementById('ACTIVIDAD').value;
+    NSGAF=document.getElementById('NSGAF').value;
+    RESPONSABLE=document.getElementById('RESPONSABLE').value;
+    CENTRO=document.getElementById('CENTRO').value;
+    LOCALIDAD=document.getElementById('LOCALIDAD').value;
+    let auxHoras;
+    let auxTotHoras=+DURACION_ACTIVIDAD;
+    let auxTotHoras2=auxTotHoras;
+    let auxHoras2;//alert('mm');
+    SESIONES.forEach((sesion,i)=>{
+        if((''+sesion.DURACIÓN).indexOf(':')>0)
+            auxHoras=ConvierteEnHoras(sesion.DURACIÓN);
+        else auxHoras=sesion.DURACIÓN;
+        auxHoras2=auxHoras;
+        //alert(auxTotHoras+' - '+auxHoras)
+        if(auxTotHoras<Math.ceil(auxHoras)){
+            auxHoras=auxTotHoras2;
+        }else{
+            auxHoras=Math.floor(100*auxHoras)/100;
+            auxTotHoras2-=auxHoras;
+        }
+        sesion.DURACIÓN=''+auxHoras;//alert(i+'-'+sesion.DURACIÓN);
+        auxTotHoras-=auxHoras2;
+        ///////////////
+    });
+    //alert(JSON.stringify(PARTICIPANTES));
+    let Datos={EJERCICIO:EJERCICIO,TIPO:TIPO, DURACION_ACTIVIDAD:DURACION_ACTIVIDAD, ACTIVIDAD: ACTIVIDAD, NSGAF:NSGAF, RESPONSABLE:RESPONSABLE, CENTRO:CENTRO, LOCALIDAD:LOCALIDAD, CRÉDITOS:CRÉDITOS, PARTICIPANTES:PARTICIPANTES, LISTA_PONENTES:LISTA_PONENTES, SESIONES:SESIONES };
+    
+    let N_ACTIVIDAD= ACTIVIDAD.split('-')[0].trim()
+    let found = palabras.find(element => element.ACTIVIDAD === N_ACTIVIDAD);
+
+    alert(ACTIVIDAD+'\n'+JSON.stringify(palabras));
+    alert(JSON.stringify(found));
+    if(found){
+        alert(calcMD5(found.PALABRA));
+        let datos = Aes.Ctr.encrypt(JSON.stringify(Datos),found.PALABRA,256);
+        let aux=0;
+        
+        let aux2=new Date();
+        let coletilla='('+Datos.ACTIVIDAD.split('-')[0].trim()+')'+aux+'_'+FormateaFecha(aux2)+'#'+aux2.getHours()+'#'+aux2.getMinutes()+'#'+aux2.getSeconds()+'_'+aux2.getMilliseconds()+'.kjson';
+        descargarArchivo(generarTjson(datos), 'Datos'+coletilla);
+    }else{
+        alert('Clave no definida para la actividad: '+ ACTIVIDAD);
+    }
+}
+
+function ImportaDatos(ACTIVIDAD){
+    const found = palabras.find(element => element.ACTIVIDAD === ACTIVIDAD);
+    if(found){
+         alert(calcMD5(found.PALABRA));
+        let texto=Aes.Ctr.decrypt(document.getElementById('dd').value, found.PALABRA ,256);
+        //alert(texto);
+        CargaLaActividad(texto);
+    }else{
+         alert('Clave no definida para la actividad: '+ ACTIVIDAD);
+    }
+} 
+
+//////
+//para pasar la duración desde el plan de sesiones al creador de sesiones pulsando en la hora de finalización
+function PonDuracionAjustada(i){
+    let final = document.getElementById(`SESION_HORA_FINAL_${i}`).value.split(':');
+    let inicial = document.getElementById(`SESION_HORA_INICIO_${i}`).value.split(':');
+
+    let minutos=(+final[1]+final[0]*60)-(+inicial[1]+inicial[0]*60);
+    let Hduracion='0'+Math.floor(minutos/60);
+    Hduracion=Hduracion.substring(Hduracion.length-2);
+    let Mduracion='0'+minutos%60;
+    Mduracion=Mduracion.substring(Mduracion.length-2);
+    document.getElementById('SESION_DURACIÓN').value=Hduracion+':'+Mduracion;
 }

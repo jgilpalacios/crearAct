@@ -7,6 +7,11 @@
     <script languaje="JavaScript" src="js/calendario.js"></script>
     <script type="text/javascript" src="js/InterfazCrea.js"></script>
     <script type="text/javascript" src="js/DiasNoLectivos2021-22.js"></script>
+
+	<script type="text/javascript" src="jscry/aes.js"></script>
+	<script type="text/javascript" src="jscry/aes-ctr.js"></script>
+	<script type="text/javascript" src="jscry/confcry.js"></script>
+	<script type="text/javascript" src="jscry/md5.js"></script>
   </head>
   <body>
   <div>
@@ -62,6 +67,7 @@
 	<button id="CARGA_PARTICIPANTES" onclick="/*alert(this.value);*/GeneraParticipantes(document.getElementById('dd').value);alert(JSON.stringify(PARTICIPANTES))">PON LOS PARTICIPANTES</button>
 	<button id="CARGA_ACTIVIDAD" onclick="CargaLaActividad(document.getElementById('dd').value);/*alert('LA CARGAMOS')*/">RECARGA LA ACTIVIDAD</button>
   <button id="EXPORTA SESIONES" onclick="genSesCSV()">EXPORTA SESIONES</button><br>
+  <button id="Exporta Datos" onclick="alert('Exportamos');ExportarDatos()">Exporta Datos</button><button id="Importa datos" onclick="alert('Importamos'); ImportaDatos('0167')">Importa datos</button></br>
     <textarea rows="100" cols="80" id="dd" name="dd"></textarea>
   </div>
   </body>

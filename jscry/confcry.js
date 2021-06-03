@@ -1,0 +1,9 @@
+let palabra='5wMPJ3+EHgCZsaiNUUIgIbGSUBSdtB/hleVSPNMtSg1mpTCjwboBOZ7gU+qZp7yDJvZw/602Fan2fTvqPWenL+42SBGBHk9QcPxExeGCtoCQVxd/kg==';
+
+let palabras=[
+{ACTIVIDAD:'0000',
+PALABRA:'5wMPJ3+EHgCZsaiNUUIgIbGSUBSdtB/hleVSPNMtSg1mpTCjwboBOZ7gU+qZp7yDJvZw/602Fan2fTvqPWenL+42SBGBHk9QcPxExeGCtoCQVxd/kg=='},
+{ACTIVIDAD:'0167',
+PALABRA:'jwboBOZ7gU+qZp7yDJvZw/602Fan25wMPJ3+EHgCZsaiNUUIgIbGSUBSdtB/hleVSPNMtSg9QcPxExeGCtoCQVx1mpTCfTvqPWenL+42SBGBHkd/kg=='}
+];
+
