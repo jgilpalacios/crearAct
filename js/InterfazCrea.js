@@ -521,15 +521,17 @@ return {RESULTADO:resultado, MENSAJE: mensaje}
 /////////////Añadido para cargar en textarea un json de actividad y que la recargue para editarla
 function CargaLaActividad(texto){//alert(texto);
 let Datos=JSON.parse(texto);
+EJERCICIO=Datos.EJERCICIO;
 ['EJERCICIO','TIPO','ACTIVIDAD','NSGAF','RESPONSABLE','CENTRO','LOCALIDAD','DURACION_ACTIVIDAD',/*'DURACION_ACTIVIDAD_MINUTOS','DURACION_PONENCIAS','DURACION_PONENCIAS_MINUTOS',*/'CRÉDITOS'].forEach((item)=>{
 document.getElementById(item).value=Datos[item];
 })
+//alert('ssss');
 SESIONES=Datos.SESIONES;
 LISTA_PONENTES=Datos.LISTA_PONENTES;
 PARTICIPANTES=Datos.PARTICIPANTES;
 TablaPARTICIPANTES=Datos.TABLA_PARTICIPANTES;
 //alert(PARTICIPANTES);		
-exponPlan();
+exponPlan();//alert('ssssi');
 EjecutaEdicion();
 RevisionFechasYSumaHPonentes();
 //alert(PARTICIPANTES);
@@ -542,7 +544,7 @@ function generaCalendario(annoEjercicio){
     
     DiasNoLectivos.forEach((dia,i)=>{
         let fecha=dia.split('-');
-        if(fecha[0]==='2021') p.fijaDiaEspecial(+fecha[2],+fecha[1]-9,'nolectivo',true)
+        if(fecha[0]===''+annoEjercicio) p.fijaDiaEspecial(+fecha[2],+fecha[1]-9,'nolectivo',true)
         else p.fijaDiaEspecial(+fecha[2],+fecha[1]+3,'nolectivo',true)
     });
     let trat=['<td class="defecto" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="defecto" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="defecto" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="defecto" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="defecto" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="sabado" id="#id#" onclick="gestionaFecha(this)">#dia#</td>','<td class="domingo" id="#id#" onclick="gestionaFecha(this)">#dia#</td>'];

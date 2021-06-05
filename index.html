@@ -16,7 +16,7 @@
   <body>
   <div>
   	EJERCICIO: <input id="EJERCICIO" type="text" value="2021-22"><br>
-  <select id="selEJERCICIO" onchange="document.getElementById('EJERCICIO').value=this.value">	  
+  <select id="selEJERCICIO" onchange="document.getElementById('EJERCICIO').value=this.value; document.getElementById('cont').innerHTML=generaCalendario(+this.value.split('-')[0]);">	  
   </select>
   <hr>
     <span id="CONTENIDO_SESIONES">AQUI VA</span>

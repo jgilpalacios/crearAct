@@ -8,6 +8,12 @@ class Calendario{
         this.calen=[];//array con todo el ejercicio
 		let pos=-1;
 		let annEfec=anno;
+		//alert(JSON.stringify(DiasNoLectivosEjercicio))
+		let found = DiasNoLectivosEjercicio.find(element => element.Ejercicio === annEfec);
+		//alert(annEfec+': '+JSON.stringify(found));
+		if(found)DiasNoLectivos=found.Dias;
+		else DiasNoLectivos=[];
+
 		for (let i=0;i<12;i++){
 			pos=mesIn+i-1;
 			if(pos>=12){
